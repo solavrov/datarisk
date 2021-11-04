@@ -12,12 +12,13 @@
 #' @examples
 main.put_new_ticker <- function(ticker,
                                 curncy,
+                                asset_type,
                                 bbg_ticker=NA,
                                 finam_file=paste0(K$finam_dir, ticker, '.csv'),
                                 split=NA,
                                 split_date=NA) {
   cat('doing ', ticker, '...\n', sep='')
-  if (!is.na(bbg_ticker)) db.add_ticker(ticker, bbg_ticker, curncy)
+  if (!is.na(bbg_ticker)) db.add_ticker(ticker, bbg_ticker, curncy, asset_type)
   con <- Rblpapi::blpConnect()
   df <- db.read_finam(finam_file, split, split_date)
   db.add_px(ticker, df)
