@@ -27,14 +27,15 @@ db.read_finam <- function(file, split=NA, split_date=NA) {
 #' @param ticker ticker
 #' @param bbg_ticker BBG ticker
 #' @param curncy currency
+#' @param type asset type
 #'
 #' @return nothing
 #' @export
 #'
 #' @examples
-db.add_ticker <- function(ticker, bbg_ticker, curncy, asset_type) {
+db.add_ticker <- function(ticker, bbg_ticker, curncy, type) {
   db <- DBI::dbConnect(RSQLite::SQLite(), K$db_name)
-  df <- data.frame(ticker=ticker, bbg_ticker=bbg_ticker, curncy=curncy, asset_type=asset_type)
+  df <- data.frame(ticker=ticker, bbg_ticker=bbg_ticker, curncy=curncy, type=type)
   DBI::dbWriteTable(db, 'tickers', df, append=TRUE)
   DBI::dbDisconnect(db)
 }

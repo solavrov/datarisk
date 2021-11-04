@@ -20,6 +20,7 @@ K <- list(
 
   dir_refresh_time = 'data/refresh_time',
   dir_tickers = 'data/tickers',
+  dir_types = 'data/types',
   dir_cov_rub = 'data/cov_rub',
   dir_cor_rub = 'data/cor_rub',
   dir_cov_usd = 'data/cov_usd',
