@@ -103,7 +103,7 @@ bbg.read_last_price <- function(bbg_ticker, con) {
 #'
 #' @examples
 bbg.rub_rfr <- function(con) {
-  bbg.read_last_price('MICXRU1Y Index', con)
+  log(1 + bbg.read_last_price('MICXRU1Y Index', con) / 100) * 100
 }
 
 
@@ -116,7 +116,7 @@ bbg.rub_rfr <- function(con) {
 #'
 #' @examples
 bbg.usd_rfr <- function(con) {
-  bbg.read_last_price('USOSFR1 Curncy', con)
+  log(1 + bbg.read_last_price('USOSFR1 Curncy', con) / 100) * 100
 }
 
 
@@ -129,7 +129,7 @@ bbg.usd_rfr <- function(con) {
 #'
 #' @examples
 bbg.eur_rfr <- function(con) {
-  bbg.read_last_price('EESWE1 Curncy', con)
+  log(1 + bbg.read_last_price('EESWE1 Curncy', con) / 100) * 100
 }
 
 
