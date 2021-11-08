@@ -74,6 +74,8 @@ bbg.read_dvd <- function(ticker, con, startDate=K$init_date) {
     if (nrow(df) > 0) {
       df <- aggregate(df$dvd, by=list(df$date), sum)
       names(df) <- c('date', 'dvd')
+    } else {
+      df <- NULL
     }
   }
   return (df)

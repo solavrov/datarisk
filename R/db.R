@@ -28,14 +28,15 @@ db.read_finam <- function(file, split=NA, split_date=NA) {
 #' @param bbg_ticker BBG ticker
 #' @param curncy currency
 #' @param type asset type
+#' @param name asset name
 #'
 #' @return nothing
 #' @export
 #'
 #' @examples
-db.add_ticker <- function(ticker, bbg_ticker, curncy, type) {
+db.add_ticker <- function(ticker, bbg_ticker, curncy, type, name) {
   db <- DBI::dbConnect(RSQLite::SQLite(), K$db_name)
-  df <- data.frame(ticker=ticker, bbg_ticker=bbg_ticker, curncy=curncy, type=type)
+  df <- data.frame(ticker=ticker, bbg_ticker=bbg_ticker, curncy=curncy, type=type, name=name)
   DBI::dbWriteTable(db, 'tickers', df, append=TRUE)
   DBI::dbDisconnect(db)
 }
@@ -307,12 +308,15 @@ db.refresh_px <- function(ticker) {
 #'
 #' @examples
 db.refresh_dvd <- function(ticker) {
-  if (ticker != 'RUB' & db.exists(paste0(ticker, '_dvd'))) {
-    con <- Rblpapi::blpConnect()
-    df <- bbg.read_dvd(ticker, con, db.last_date(paste0(ticker, "_dvd")) + 1)
-    if (nrow(df) > 0) db.add_dvd(ticker, df)
-    Rblpapi::blpDisconnect(con)
+  if (db.exists(paste0(ticker, '_dvd'))) {
+    startDate <- db.last_date(paste0(ticker, "_dvd")) + 1
+  } else {
+    startDate <- K$init_date
   }
+  con <- Rblpapi::blpConnect()
+  df <- bbg.read_dvd(ticker, con, startDate)
+  if (!is.null(df)) db.add_dvd(ticker, df)
+  Rblpapi::blpDisconnect(con)
 }
 
 

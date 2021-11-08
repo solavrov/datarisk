@@ -108,6 +108,7 @@ fb.refresh <- function(fb) {
   cat('START FB REFRESH...\n', sep='')
   fb.put_df(db.take_all_tickers()$ticker, K$dir_tickers, fb)
   fb.put_df(db.take_all_tickers()$type, K$dir_types, fb)
+  fb.put_df(db.take_all_tickers()$name, K$dir_names, fb)
 
   cat('DOING FB REFRESH RUB...\n', sep='')
   fb.put_df(calc.cov('RUB'), K$dir_cov_rub, fb)

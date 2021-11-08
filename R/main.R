@@ -3,6 +3,7 @@
 #' @param ticker ticker
 #' @param curncy currency
 #' @param type asset type
+#' @param name asset name
 #' @param bbg_ticker BBG ticker
 #' @param finam_file finam file
 #' @param split split multiplier
@@ -15,12 +16,13 @@
 main.put_new_ticker <- function(ticker,
                                 curncy,
                                 type,
+                                name,
                                 bbg_ticker=NA,
                                 finam_file=paste0(K$finam_dir, ticker, '.csv'),
                                 split=NA,
                                 split_date=NA) {
   cat('doing ', ticker, '...\n', sep='')
-  if (!is.na(bbg_ticker)) db.add_ticker(ticker, bbg_ticker, curncy, type)
+  if (!is.na(bbg_ticker)) db.add_ticker(ticker, bbg_ticker, curncy, type, name)
   con <- Rblpapi::blpConnect()
   df <- db.read_finam(finam_file, split, split_date)
   db.add_px(ticker, df)
