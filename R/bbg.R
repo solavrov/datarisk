@@ -135,3 +135,22 @@ bbg.eur_rfr <- function(con) {
 }
 
 
+#' Return simple and cc last RFR 1Y for USD, RUB, EUR
+#'
+#' @param con BBG connection
+#'
+#' @return list of simple and cc last RFR 1Y for USD, RUB, EUR
+#' @export
+#'
+#' @examples
+bbg.rfr <- function(con) {
+  simp <- c(
+    bbg.read_last_price('USOSFR1 Curncy', con),
+    bbg.read_last_price('MICXRU1Y Index', con),
+    bbg.read_last_price('EESWE1 Curncy', con)
+    )
+  names(simp) <- c('USD', 'RUB', 'EUR')
+  cc <- log(1 + simp / 100) * 100
+  return (list(simp=simp, cc=cc))
+}
+

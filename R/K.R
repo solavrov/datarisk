@@ -15,6 +15,7 @@ K <- list(
   db_name = 'datarisk.sqlite',
 
   cov_win = 750,
+  year = 250,
 
   return_round = 4,
 

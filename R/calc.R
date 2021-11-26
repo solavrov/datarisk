@@ -245,4 +245,44 @@ calc.er <- function(curncy) {
 }
 
 
+#' Return expected simple and cc returns, simple and cc covariance matrices
+#'
+#' @param curncy currency
+#' @param cov_win number of last dates in calculation
+#'
+#' @return list of expected simple and cc returns, simple and cc covariance matrices
+#' @export
+#'
+#' @examples
+calc.model <- function(curncy, cov_win = K$cov_win) {
+
+  R00 <- db.last_row(K$sp_expect)$r / 100
+  con <- bbg.con()
+  rfr <- bbg.rfr(con)
+  bbg.discon(con)
+  F00 <- rfr$simp['USD'] / 100
+
+  g__0 <- calc.cov('USD', cov_win) * K$year / 10000
+  d_0 <- diag(g__0)
+  g0_0 <- g__0['IVV', ]
+  d00 <- g0_0['IVV']
+  g__c <-  calc.cov(curncy, cov_win) * K$year / 10000
+  d_c <- diag(g__c)
+
+  D00 <- (exp(d00) - 1) * (1 + R00) ^ 2
+  denom <- D00 - (1 + R00) * (R00 - F00) * (exp(g0_0) - 1)
+  if (any(denom <= 0)) stop('MODEL FAILURE!')
+  R_0 <- ( D00 * F00 + (1 + R00) * (R00 - F00) * (exp(g0_0) - 1) ) / denom
+
+  r_0 <- log(1 + R_0) - d_0 / 2
+  r_c <- r_0 -  r_0[curncy] + rfr$cc[curncy] / 100
+  R_c <- exp(r_c + d_c / 2) - 1
+  G__c <- (exp(g__c) - 1) * ((1 + R_c) %*% t(1 + R_c))
+
+  return (list(ercc=r_c * 100,
+               er=R_c * 100,
+               covcc=g__c * 10000,
+               cov=G__c * 10000))
+
+}
 
