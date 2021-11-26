@@ -60,6 +60,7 @@ bbg.read_px <- function(ticker, startDate, con) {
 #' @examples
 bbg.read_dvd <- function(ticker, con, startDate=K$init_date) {
   df <- Rblpapi::bds(db.bbg(ticker), 'DVD_HIST_ALL', con=con)
+  df <- df[!is.na(df$'Ex-Date'), ]
   if (!is.null(df)) {
     df <- df[df$`Ex-Date` >= startDate, ]
     regular <- db.any(df$`Dividend Type`, K$reg_div)

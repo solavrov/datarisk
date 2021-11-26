@@ -111,27 +111,31 @@ fb.refresh <- function(fb) {
   fb.put_df(db.take_all_tickers()$name, K$dir_names, fb)
 
   cat('DOING FB REFRESH RUB...\n', sep='')
-  fb.put_df(calc.cov('RUB'), K$dir_cov_rub, fb)
-  fb.put_df(calc.cor('RUB'), K$dir_cor_rub, fb)
-  fb.put_df(calc.er('RUB'), K$dir_er_rub, fb)
+  mod <- calc.model('RUB')
+  fb.put_df(mod$cov, K$dir_cov_rub, fb)
+  fb.put_df(mod$er, K$dir_er_rub, fb)
+  fb.put_df(mod$covcc, K$dir_covcc_rub, fb)
+  fb.put_df(mod$ercc, K$dir_ercc_rub, fb)
   cat('DONE!\n', sep='')
 
   cat('DOING FB REFRESH USD...\n', sep='')
-  fb.put_df(calc.cov('USD'), K$dir_cov_usd, fb)
-  fb.put_df(calc.cor('USD'), K$dir_cor_usd, fb)
-  fb.put_df(calc.er('USD'), K$dir_er_usd, fb)
+  mod <- calc.model('USD')
+  fb.put_df(mod$cov, K$dir_cov_usd, fb)
+  fb.put_df(mod$er, K$dir_er_usd, fb)
+  fb.put_df(mod$covcc, K$dir_covcc_usd, fb)
+  fb.put_df(mod$ercc, K$dir_ercc_usd, fb)
   cat('DONE!\n', sep='')
 
   cat('DOING FB REFRESH EUR...\n', sep='')
-  fb.put_df(calc.cov('EUR'), K$dir_cov_eur, fb)
-  fb.put_df(calc.cor('EUR'), K$dir_cor_eur, fb)
-  fb.put_df(calc.er('EUR'), K$dir_er_eur, fb)
+  mod <- calc.model('EUR')
+  fb.put_df(mod$cov, K$dir_cov_eur, fb)
+  fb.put_df(mod$er, K$dir_er_eur, fb)
+  fb.put_df(mod$covcc, K$dir_covcc_eur, fb)
+  fb.put_df(mod$ercc, K$dir_ercc_eur, fb)
   cat('DONE!\n', sep='')
 
   fb.put_value(format(Sys.time(), '%Y-%m%-%d %H:%M:%S %Z'),
                K$dir_refresh_time, fb)
   cat('END FB REFRESH...\n', sep='')
 }
-
-
 
