@@ -189,61 +189,6 @@ calc.cor <- function(curncy, cov_win = K$cov_win) {
 }
 
 
-#' Calculate betas with SP500 (IVV)
-#'
-#' @param curncy target currency
-#' @param cov_win number of last dates in calculation
-#'
-#' @return vector of betas
-#' @export
-#'
-#' @examples
-calc.betas <- function(cov_win = K$cov_win) {
-  m <- calc.cov('USD', cov_win)
-  return (m['IVV', ] / m['IVV','IVV'])
-}
-
-
-#' Return expected returns for all tickers
-#'
-#' @param curncy target currency
-#'
-#' @return vector of expected returns
-#' @export
-#'
-#' @examples
-calc.er <- function(curncy) {
-
-  er <- c()
-
-  con <- bbg.con()
-
-  rfr_usd <- bbg.usd_rfr(con)
-  r_sp <- db.last_row(K$sp_expect)$r_cc
-  prem_usd <- r_sp - rfr_usd
-
-  if (curncy == 'USD') {
-    rfr_curncy <-  rfr_usd
-  } else if (curncy == 'RUB') {
-    rfr_curncy <- bbg.rub_rfr(con)
-  } else if (curncy == 'EUR') {
-    rfr_curncy <- bbg.eur_rfr(con)
-  } else {
-    stop('WRONG CURRENCY!!!')
-  }
-
-  bbg.discon(con)
-
-  betas <- calc.betas()
-
-  for (t in names(betas)) {
-    er[t] <- rfr_curncy + (betas[[t]] - betas[[curncy]]) * prem_usd
-  }
-
-  return (round(er, K$return_round))
-
-}
-
 
 #' Return expected simple and cc returns, simple and cc covariance matrices
 #'
