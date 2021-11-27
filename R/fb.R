@@ -110,8 +110,12 @@ fb.refresh <- function(fb) {
   fb.put_df(db.take_all_tickers()$type, K$dir_types, fb)
   fb.put_df(db.take_all_tickers()$name, K$dir_names, fb)
 
+  con <- bbg.con()
+  rfr <- bbg.rfr(con)
+  bbg.discon(con)
+
   cat('DOING FB REFRESH RUB...\n', sep='')
-  mod <- calc.model('RUB')
+  mod <- calc.model('RUB', rfr)
   fb.put_df(mod$cov, K$dir_cov_rub, fb)
   fb.put_df(mod$er, K$dir_er_rub, fb)
   fb.put_df(mod$covcc, K$dir_covcc_rub, fb)
@@ -119,7 +123,7 @@ fb.refresh <- function(fb) {
   cat('DONE!\n', sep='')
 
   cat('DOING FB REFRESH USD...\n', sep='')
-  mod <- calc.model('USD')
+  mod <- calc.model('USD', rfr)
   fb.put_df(mod$cov, K$dir_cov_usd, fb)
   fb.put_df(mod$er, K$dir_er_usd, fb)
   fb.put_df(mod$covcc, K$dir_covcc_usd, fb)
@@ -127,7 +131,7 @@ fb.refresh <- function(fb) {
   cat('DONE!\n', sep='')
 
   cat('DOING FB REFRESH EUR...\n', sep='')
-  mod <- calc.model('EUR')
+  mod <- calc.model('EUR', rfr)
   fb.put_df(mod$cov, K$dir_cov_eur, fb)
   fb.put_df(mod$er, K$dir_er_eur, fb)
   fb.put_df(mod$covcc, K$dir_covcc_eur, fb)

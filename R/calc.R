@@ -193,18 +193,16 @@ calc.cor <- function(curncy, cov_win = K$cov_win) {
 #' Return expected simple and cc returns, simple and cc covariance matrices
 #'
 #' @param curncy currency
+#' @param rfr risk free rates from bbg.rfr
 #' @param cov_win number of last dates in calculation
 #'
 #' @return list of expected simple and cc returns, simple and cc covariance matrices
 #' @export
 #'
 #' @examples
-calc.model <- function(curncy, cov_win = K$cov_win) {
+calc.model <- function(curncy, rfr, cov_win = K$cov_win) {
 
   R00 <- db.last_row(K$sp_expect)$r / 100
-  con <- bbg.con()
-  rfr <- bbg.rfr(con)
-  bbg.discon(con)
   F00 <- rfr$simp['USD'] / 100
 
   g__0 <- calc.cov('USD', cov_win) * K$year / 10000
@@ -231,3 +229,10 @@ calc.model <- function(curncy, cov_win = K$cov_win) {
 
 }
 
+
+# calc.sample <- function(curncy, cov_win = K$cov_win) {
+#
+#   mod <- calc.mode(curncy, cov_win)
+#
+#
+# }
