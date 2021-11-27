@@ -46,3 +46,26 @@ max(abs(ER2 / rowMeans(R2) - 1))
 max(abs(cov(t(r2)) / g2 - 1))
 max(abs(cov(t(R2)) / G2 - 1))
 
+# distributions
+n <- 10^3
+m <- nrow(g1)
+
+X <- matrix(rnorm(m*n), nrow=m)
+r1 <- t(chol(g1)) %*% X + er1
+
+R1 <- (exp(r1/100) - 1) * 100
+hist(R1['SBER', ], breaks=20)
+
+
+# sample
+n <- 10^3
+m <- nrow(g1)
+
+X <- matrix(rnorm(m*n), nrow=m)
+r1 <- t(chol(g1)) %*% X + er1
+
+tickers <- names(mod1$ercc)
+r1_plus <- rbind(r1, USD=rep(unname(mod1$ercc['USD']), 1000))
+r1_plus <- r1_plus[order(match(rownames(r1_plus), tickers)), ]
+
+
