@@ -234,6 +234,7 @@ calc.model <- function(curncy, rfr, cov_win = K$cov_win) {
 #'
 #' @param curncy currency
 #' @param rfr risk free rates from bbg.rfr
+#' @param len sample length
 #' @param cov_win number of last dates in calculation
 #'
 #' @return
