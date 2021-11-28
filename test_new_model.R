@@ -65,16 +65,54 @@ rfr <- bbg.rfr()
 ss <- calc.sample('USD', rfr, 1000)
 sb <- calc.sample('USD', rfr, 10^7)
 
-t1 <- c('SBER', 'JPM', 'BTC', 'TSLA', 'IVV')
+t1 <- c('SBER', 'JPM', 'BTC', 'TSLA', 'IVV') # high vol
+t2 <- c('EUR', 'RUB', 'XAU', 'EFA', 'IVV') # low vol
+t3 <- c('EUR', 'RUB', 'XAU') # low vol
 
-ps <- colSums(ss[t1, ]) / 5
-pb <- colSums(sb[t1, ]) / 5
+l <- list(t1, t2, t3)
 
-quantile(ps, 0.05)
-quantile(pb, 0.05)
+for (t0 in l) {
+  ps <- colSums(ss[t0, ]) / length(t0)
+  pb <- colSums(sb[t0, ]) / length(t0)
 
-quantile(ps, 0.01)
-quantile(pb, 0.01)
+  cat(t0, '\n')
+
+  cat('1000 5%:', quantile(ps, 0.05), '\n')
+  cat('big 5%:', quantile(pb, 0.05), '\n\n')
+
+  cat('1000 1%:', quantile(ps, 0.01), '\n')
+  cat('big 1%:', quantile(pb, 0.01), '\n\n')
+}
+
+
+# test var lognormal approximation
+
+rfr <- bbg.rfr()
+mod <- calc.model('USD', rfr)
+s <- calc.sample('USD', rfr, 10^7)
+
+t1 <- c('SBER', 'JPM', 'BTC', 'TSLA', 'IVV') # high vol
+t2 <- c('EUR', 'RUB', 'XAU', 'EFA', 'IVV') # low vol
+t3 <- c('EUR', 'RUB', 'XAU') # low vol
+
+l <- list(t1, t2, t3)
+
+for (t0 in l) {
+  R <- mean(mod$er[t0]) / 100
+  G <- mod$cov[t0, t0] / 10000
+  w <- rep(1, length(t0)) / length(t0)
+  D <- t(w) %*% G %*% w
+
+  d <- log(1 + D/(1 + R)^2)
+  r <- log(1 + R) - d / 2
+
+  cat(t0, '\n')
+
+  cat('VaR lognorm:', (qnorm(0.05) * sqrt(d) + r) * 100, '\n')
+
+  ps <- colSums(s[t0, ]) / length(t0)
+  cat('VaR monte carlo', quantile(ps, 0.05), '\n\n')
+}
 
 
 
