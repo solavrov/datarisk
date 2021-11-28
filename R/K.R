@@ -16,6 +16,7 @@ K <- list(
 
   cov_win = 750,
   year = 250,
+  sample_len = 1000,
 
   return_round = 4,
 

@@ -230,9 +230,32 @@ calc.model <- function(curncy, rfr, cov_win = K$cov_win) {
 }
 
 
-# calc.sample <- function(curncy, cov_win = K$cov_win) {
-#
-#   mod <- calc.mode(curncy, cov_win)
-#
-#
-# }
+#' Return sample of cc returns for all assets for given currency
+#'
+#' @param curncy currency
+#' @param rfr risk free rates from bbg.rfr
+#' @param cov_win number of last dates in calculation
+#'
+#' @return
+#' @export
+#'
+#' @examples
+calc.sample <- function(curncy, rfr, len=K$sample_len, cov_win = K$cov_win) {
+
+  mod <- calc.model(curncy, rfr, cov_win)
+
+  g <- mod$covcc[rownames(mod$covcc)!=curncy, colnames(mod$covcc)!=curncy]
+  er <- mod$ercc[names(mod$ercc)!=curncy]
+
+  X <- matrix(rnorm(nrow(g) * len), nrow=nrow(g))
+  r <- t(chol(g)) %*% X + er
+
+  tickers <- names(mod$ercc)
+  r <- rbind(r, XXX=rep(unname(mod$ercc[curncy]), len))
+  rownames(r)[rownames(r)=='XXX'] <- curncy
+  r <- r[order(match(rownames(r), tickers)), ]
+
+  return (r)
+
+}
+

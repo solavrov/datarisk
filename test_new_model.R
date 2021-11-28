@@ -1,5 +1,9 @@
+con <- bbg.con()
+rfr <- bbg.rfr(con)
+bbg.discon(con)
+
 # USD
-mod1 <- calc.model('USD')
+mod1 <- calc.model('USD', rfr)
 
 max(abs(mod1$er['USD'] + mod1$cov['IVV',] / mod1$cov['IVV', 'IVV'] * (mod1$er['IVV'] - mod1$er['USD']) - mod1$er))
 
@@ -23,7 +27,7 @@ max(abs(cov(t(r1)) / g1 - 1))
 max(abs(cov(t(R1)) / G1 - 1))
 
 # RUB
-mod2 <- calc.model('RUB')
+mod2 <- calc.model('RUB', rfr)
 
 max(abs(mod2$ercc - mod1$ercc + mod1$ercc['RUB'] - mod2$ercc['RUB']))
 

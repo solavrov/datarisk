@@ -110,9 +110,7 @@ fb.refresh <- function(fb) {
   fb.put_df(db.take_all_tickers()$type, K$dir_types, fb)
   fb.put_df(db.take_all_tickers()$name, K$dir_names, fb)
 
-  con <- bbg.con()
-  rfr <- bbg.rfr(con)
-  bbg.discon(con)
+  rfr <- bbg.rfr()
 
   cat('DOING FB REFRESH RUB...\n', sep='')
   mod <- calc.model('RUB', rfr)
