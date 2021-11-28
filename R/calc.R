@@ -230,7 +230,7 @@ calc.model <- function(curncy, rfr, cov_win = K$cov_win) {
 }
 
 
-#' Return sample of cc returns for all assets for given currency
+#' Return sample of simple returns for all assets for given currency
 #'
 #' @param curncy currency
 #' @param rfr risk free rates from bbg.rfr
@@ -255,7 +255,9 @@ calc.sample <- function(curncy, rfr, len=K$sample_len, cov_win = K$cov_win) {
   rownames(r)[rownames(r)=='XXX'] <- curncy
   r <- r[order(match(rownames(r), tickers)), ]
 
-  return (r)
+  R <- (exp(r / 100) - 1) * 100
+
+  return (R)
 
 }
 

@@ -1,6 +1,4 @@
-con <- bbg.con()
-rfr <- bbg.rfr(con)
-bbg.discon(con)
+rfr <- bbg.rfr()
 
 # USD
 mod1 <- calc.model('USD', rfr)
@@ -61,15 +59,23 @@ R1 <- (exp(r1/100) - 1) * 100
 hist(R1['SBER', ], breaks=20)
 
 
-# sample
-n <- 10^3
-m <- nrow(g1)
+# test var for 1000 sample
 
-X <- matrix(rnorm(m*n), nrow=m)
-r1 <- t(chol(g1)) %*% X + er1
+rfr <- bbg.rfr()
+ss <- calc.sample('USD', rfr, 1000)
+sb <- calc.sample('USD', rfr, 10^7)
 
-tickers <- names(mod1$ercc)
-r1_plus <- rbind(r1, USD=rep(unname(mod1$ercc['USD']), 1000))
-r1_plus <- r1_plus[order(match(rownames(r1_plus), tickers)), ]
+t1 <- c('SBER', 'JPM', 'BTC', 'TSLA', 'IVV')
+
+ps <- colSums(ss[t1, ]) / 5
+pb <- colSums(sb[t1, ]) / 5
+
+quantile(ps, 0.05)
+quantile(pb, 0.05)
+
+quantile(ps, 0.01)
+quantile(pb, 0.01)
+
+
 
 
