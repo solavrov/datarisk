@@ -97,45 +97,6 @@ bbg.read_last_price <- function(bbg_ticker, con) {
 }
 
 
-#' Return last RUB RFR 1Y
-#'
-#' @param con BBG connection
-#'
-#' @return last RUB RFR 1Y
-#' @export
-#'
-#' @examples
-bbg.rub_rfr <- function(con) {
-  log(1 + bbg.read_last_price('MICXRU1Y Index', con) / 100) * 100
-}
-
-
-#' Return last USD RFR 1Y
-#'
-#' @param con BBG connection
-#'
-#' @return last USD RFR 1Y
-#' @export
-#'
-#' @examples
-bbg.usd_rfr <- function(con) {
-  log(1 + bbg.read_last_price('USOSFR1 Curncy', con) / 100) * 100
-}
-
-
-#' Return last EUR RFR 1Y
-#'
-#' @param con BBG connection
-#'
-#' @return last EUR RFR 1Y
-#' @export
-#'
-#' @examples
-bbg.eur_rfr <- function(con) {
-  log(1 + bbg.read_last_price('EESWE1 Curncy', con) / 100) * 100
-}
-
-
 #' Return simple and cc last RFR 1Y for USD, RUB, EUR
 #'
 #' @return list of simple and cc last RFR 1Y for USD, RUB, EUR
