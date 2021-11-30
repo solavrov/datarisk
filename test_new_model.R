@@ -117,4 +117,19 @@ for (t0 in l) {
 
 # monte carlo speed test
 
+rfr <- bbg.rfr()
+mod <- calc.model('USD', rfr)
+s <- calc.sample('USD', rfr, 1000)
+w <- rep(1, nrow(s)) / nrow(s)
+
+t0 <- Sys.time()
+R <- t(w) %*% s
+quantile(R, 0.05)
+t1 <- Sys.time()
+
+t1 - t0
+
+object.size(s)
+
+
 
