@@ -169,25 +169,11 @@ calc.all_returns <- function(curncy, include_date=FALSE) {
 #' @examples
 calc.cov <- function(curncy, cov_win = K$cov_win) {
   df <- tail(calc.all_returns(curncy), cov_win)
-  return(cov(df))
+  covar <- cov(df)
+  i <- which(db.take_all_tickers()$type==K$crypto)
+  covar[i, i] <- covar[i, i] * K$year_ratio
+  return(covar)
 }
-
-
-#' Calculate correlation matrix of returns of all tickers
-#'
-#' @param curncy target currency
-#' @param cov_win number of last dates in calculation
-#'
-#' @return correlation matrix
-#' @export
-#'
-#' @examples
-calc.cor <- function(curncy, cov_win = K$cov_win) {
-  df <- tail(calc.all_returns(curncy), cov_win)
-  df <- df[names(df) != curncy]
-  return(cor(df))
-}
-
 
 
 #' Return expected simple and cc returns, simple and cc covariance matrices
