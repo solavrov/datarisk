@@ -115,7 +115,7 @@ calc.px_dvd <- function(ticker, curncy) {
 #' @examples
 calc.returns <- function(ticker, curncy) {
   df <- calc.px_dvd(ticker, curncy)
-  r <- append(NA, log(tail(df[ , 2] + df[ , 3], -1) / head(df[ , 2], -1)) * 100)
+  r <- round(append(NA, log(tail(df[ , 2] + df[ , 3], -1) / head(df[ , 2], -1)) * 100), 4)
   i <- which(diff(as.Date(df[ , 1])) == 1) + 1
   df2 <- data.frame(df[i, 1], r[i])
   names(df2) <- c('date', ticker)
