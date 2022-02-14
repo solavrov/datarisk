@@ -14,14 +14,14 @@ K <- list(
 
   db_name = 'datarisk.sqlite',
 
-  cov_win = 750,
+  cov_win = 600,
   year = 250,
   sample_len = 1000,
 
   return_round = 4,
 
   crypto = 'crypto',
-  year_ratio = 360/250,
+  year_ratio = 1,
 
   dir_refresh_time = 'data/refresh_time',
   dir_tickers = 'data/tickers',

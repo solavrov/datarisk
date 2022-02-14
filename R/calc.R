@@ -45,7 +45,7 @@ calc.convert <- function(df, curncy0, curncy1) {
 }
 
 
-#' Take converted prices
+#' Calculate converted prices
 #'
 #' @param ticker ticker
 #' @param curncy target currency
@@ -54,14 +54,15 @@ calc.convert <- function(df, curncy0, curncy1) {
 #' @export
 #'
 #' @examples
-calc.take_px <- function(ticker, curncy) {
+calc.px <- function(ticker, curncy) {
   df <- db.take_px(ticker)
   df <- calc.convert(df, db.curncy(ticker), curncy)
+  names(df) <- c('date', ticker)
   return (df)
 }
 
 
-#' Take converted dividends
+#' Calculate converted dividends
 #'
 #' @param ticker ticker
 #' @param curncy target currency
@@ -70,89 +71,70 @@ calc.take_px <- function(ticker, curncy) {
 #' @export
 #'
 #' @examples
-calc.take_dvd <- function(ticker, curncy) {
+calc.dvd <- function(ticker, curncy) {
   df <- db.take_dvd(ticker)
-  df <- calc.convert(df, db.curncy(ticker), curncy)
+  if (!is.null(df)) {
+    df <- calc.convert(df, db.curncy(ticker), curncy)
+    names(df) <- c('date', paste0(ticker, '_dvd'))
+  }
   return (df)
 }
 
 
-#' Calculate returns along with base dates for each return
+#' Calculate converted prices and dividends in one dataframe
 #'
 #' @param ticker ticker
 #' @param curncy target currency
 #'
-#' @return dataframe of returns
+#' @return
 #' @export
 #'
 #' @examples
-calc.returns <- function(ticker, curncy=db.curncy(ticker)) {
-  px <- calc.take_px(ticker, curncy)
-  if (is.null(px)) return (NULL)
-  dvd <- calc.take_dvd(ticker, curncy)
-  if (is.null(dvd)) {
-    df <- px
-    r <- append(NA, log(tail(df$px, -1) / head(df$px, -1)) * 100)
-    bd <- append(NA, head(df$date, -1))
-  } else {
-    dvd <- dvd[dvd$date <= tail(px$date, 1), ]
-    df <- merge(px, dvd, all=TRUE)
-    df$dvd[is.na(df$dvd)] <- 0
-    r <- append(NA, log(tail(df$px + df$dvd, -1) / head(df$px, -1)) * 100)
-    bd <- append(NA, head(df$date, -1))
+calc.px_dvd <- function(ticker, curncy) {
+  df_px <- calc.px(ticker, curncy)
+  df_dvd <- calc.dvd(ticker, curncy)
+  if (is.null(df_dvd)) {
+    df_dvd <- data.frame(date=df_px$date, dvd=rep(0, nrow(df_px)))
   }
-  r <- round(r, K$return_round)
-  df <- data.frame(df$date, r, bd)
-  names(df) <- c('date', ticker, paste0('bd_', ticker))
-  df <- df[-1, ]
+  df <- merge(df_px, df_dvd, all.x=TRUE)
+  i <- which(is.na(df[ , 3]))
+  df[i, 3] <- 0
+  names(df) <- c('date', ticker, paste0(ticker, '_dvd'))
   return (df)
 }
 
 
-#' Return which rows are rows of equal values
+#' Calculate returns for given ticket
 #'
-#' @param df dataframe
+#' @param ticker ticket
+#' @param curncy target currency
 #'
-#' @return numbers of rows
+#' @return
 #' @export
 #'
 #' @examples
-calc.flat_rows <- function(df) {
-  n <- names(df)
-  w <- c()
-  for (i in 1:nrow(df)) {
-    if (all(df[i, n] == df[i, n[1]])) {
-      w <- append(w, i)
-    }
-  }
-  return (w)
+calc.returns <- function(ticker, curncy) {
+  df <- calc.px_dvd(ticker, curncy)
+  r <- append(NA, log(tail(df[ , 2] + df[ , 3], -1) / head(df[ , 2], -1)) * 100)
+  i <- which(diff(as.Date(df[ , 1])) == 1) + 1
+  df2 <- data.frame(df[i, 1], r[i])
+  names(df2) <- c('date', ticker)
+  return (df2)
 }
 
 
-#' Calculate returns for all tickers
+#' Calculates returns for all tickers
 #'
 #' @param curncy target currency
-#' @param include_date return with date or without
 #'
-#' @return dataframe of returns
+#' @return dataframe of returns for all tickers
 #' @export
 #'
 #' @examples
 calc.all_returns <- function(curncy, include_date=FALSE) {
-
   tickers <- db.take_all_tickers()$ticker
   df <- calc.returns(tickers[1], curncy)
   for (t in tail(tickers, -1)) df <- merge(df, calc.returns(t, curncy))
-
-  bd_tickers <- paste0('bd_', tickers)
-  bd_tickers_less_curncy <- paste0('bd_', tickers[tickers != curncy])
-  w <- calc.flat_rows(df[ , bd_tickers_less_curncy])
-  df <- df[w, ]
-
-  n <- names(df)
-  n <- n[!n %in% bd_tickers]
-  df <- df[ , n]
-
   if (!include_date) df <- df[ , -1]
   return (df)
 }
