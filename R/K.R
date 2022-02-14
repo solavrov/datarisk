@@ -21,7 +21,7 @@ K <- list(
   return_round = 4,
 
   crypto = 'crypto',
-  year_ratio = 1,
+  year_ratio = 360/250,
 
   dir_refresh_time = 'data/refresh_time',
   dir_tickers = 'data/tickers',
