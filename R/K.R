@@ -29,24 +29,32 @@ K <- list(
   dir_names = 'data/names',
 
   dir_cov_rub = 'data/cov_rub',
-  dir_cor_rub = 'data/cor_rub',
   dir_cov_usd = 'data/cov_usd',
-  dir_cor_usd = 'data/cor_usd',
   dir_cov_eur = 'data/cov_eur',
-  dir_cor_eur = 'data/cor_eur',
   dir_er_usd = 'data/er_usd',
   dir_er_rub = 'data/er_rub',
   dir_er_eur = 'data/er_eur',
 
   dir_covcc_rub = 'data/covcc_rub',
-  dir_corcc_rub = 'data/corcc_rub',
   dir_covcc_usd = 'data/covcc_usd',
-  dir_corcc_usd = 'data/corcc_usd',
   dir_covcc_eur = 'data/covcc_eur',
-  dir_corcc_eur = 'data/corcc_eur',
   dir_ercc_usd = 'data/ercc_usd',
   dir_ercc_rub = 'data/ercc_rub',
   dir_ercc_eur = 'data/ercc_eur',
+
+  dir_cov_rub_10 = 'data/cov_rub_10',
+  dir_cov_usd_10 = 'data/cov_usd_10',
+  dir_cov_eur_10 = 'data/cov_eur_10',
+  dir_er_usd_10 = 'data/er_usd_10',
+  dir_er_rub_10 = 'data/er_rub_10',
+  dir_er_eur_10 = 'data/er_eur_10',
+
+  dir_covcc_rub_10 = 'data/covcc_rub_10',
+  dir_covcc_usd_10 = 'data/covcc_usd_10',
+  dir_covcc_eur_10 = 'data/covcc_eur_10',
+  dir_ercc_usd_10 = 'data/ercc_usd_10',
+  dir_ercc_rub_10 = 'data/ercc_rub_10',
+  dir_ercc_eur_10 = 'data/ercc_eur_10',
 
 
   reg_div = c('Regular Cash',

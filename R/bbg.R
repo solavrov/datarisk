@@ -99,20 +99,33 @@ bbg.read_last_price <- function(bbg_ticker, con) {
 
 #' Return simple and cc last RFR 1Y for USD, RUB, EUR
 #'
+#' @param hor horizon in years
+#'
 #' @return list of simple and cc last RFR 1Y for USD, RUB, EUR
 #' @export
 #'
 #' @examples
-bbg.rfr <- function() {
+bbg.rfr <- function(hor = 1) {
   con <- bbg.con()
-  simp <- c(
-    bbg.read_last_price('USOSFR1 Curncy', con),
-    bbg.read_last_price('MICXRU1Y Index', con),
-    bbg.read_last_price('EESWE1 Curncy', con)
+  if (hor == 1) {
+    simp <- c(
+      bbg.read_last_price('USOSFR1 Curncy', con),
+      bbg.read_last_price('MICXRU1Y Index', con),
+      bbg.read_last_price('EESWE1 Curncy', con)
     )
+  } else if (hor == 10) {
+    simp <- c(
+      bbg.read_last_price('USOSFR10 Curncy', con),
+      bbg.read_last_price('MICXRU10 Index', con),
+      bbg.read_last_price('EESWE10 Curncy', con)
+    )
+  } else {
+    stop('bbg.rfr WRONG HORIZON!')
+  }
   names(simp) <- c('USD', 'RUB', 'EUR')
   cc <- log(1 + simp / 100) * 100
   bbg.discon(con)
   return (list(simp=simp, cc=cc))
 }
+
 

@@ -86,7 +86,7 @@ calc.dvd <- function(ticker, curncy) {
 #' @param ticker ticker
 #' @param curncy target currency
 #'
-#' @return
+#' @return dataframe of converted prices and dividends
 #' @export
 #'
 #' @examples
@@ -104,12 +104,12 @@ calc.px_dvd <- function(ticker, curncy) {
 }
 
 
-#' Calculate returns for given ticket
+#' Calculate returns for a given ticker for one day periods only!
 #'
 #' @param ticker ticket
 #' @param curncy target currency
 #'
-#' @return
+#' @return dataframe of returns
 #' @export
 #'
 #' @examples
@@ -123,7 +123,7 @@ calc.returns <- function(ticker, curncy) {
 }
 
 
-#' Calculates returns for all tickers
+#' Calculates returns for all tickers for joint one day periods!
 #'
 #' @param curncy target currency
 #'
@@ -162,31 +162,32 @@ calc.cov <- function(curncy, cov_win = K$cov_win) {
 #'
 #' @param curncy currency
 #' @param rfr risk free rates from bbg.rfr
+#' @param hor horizon in years
 #' @param cov_win number of last dates in calculation
 #'
 #' @return list of expected simple and cc returns, simple and cc covariance matrices
 #' @export
 #'
 #' @examples
-calc.model <- function(curncy, rfr, cov_win = K$cov_win) {
+calc.model <- function(curncy, rfr, hor = 1, cov_win = K$cov_win) {
 
-  R00 <- db.last_row(K$sp_expect)$r / 100
-  F00 <- rfr$simp['USD'] / 100
+  R00 <- (1 + db.last_row(K$sp_expect)$r / 100) ^ hor - 1
+  F00 <- (1 + rfr$simp['USD'] / 100) ^ hor - 1
 
-  g__0 <- calc.cov('USD', cov_win) * K$year / 10000
+  g__0 <- calc.cov('USD', cov_win) * K$year * hor / 10000
   d_0 <- diag(g__0)
   g0_0 <- g__0['IVV', ]
   d00 <- g0_0['IVV']
-  g__c <-  calc.cov(curncy, cov_win) * K$year / 10000
+  g__c <-  calc.cov(curncy, cov_win) * K$year * hor / 10000
   d_c <- diag(g__c)
 
   D00 <- (exp(d00) - 1) * (1 + R00) ^ 2
   denom <- D00 - (1 + R00) * (R00 - F00) * (exp(g0_0) - 1)
-  if (any(denom <= 0)) stop('MODEL FAILURE!')
+  if (any(denom <= 0)) stop('calc.model MODEL FAILURE!')
   R_0 <- ( D00 * F00 + (1 + R00) * (R00 - F00) * (exp(g0_0) - 1) ) / denom
 
   r_0 <- log(1 + R_0) - d_0 / 2
-  r_c <- r_0 -  r_0[curncy] + rfr$cc[curncy] / 100
+  r_c <- r_0 - r_0[curncy] + rfr$cc[curncy] * hor / 100
   R_c <- exp(r_c + d_c / 2) - 1
   G__c <- (exp(g__c) - 1) * ((1 + R_c) %*% t(1 + R_c))
 
